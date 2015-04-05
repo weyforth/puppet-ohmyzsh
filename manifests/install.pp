@@ -51,7 +51,7 @@ define ohmyzsh::install(
     creates => "${home}/.oh-my-zsh",
     command => "git clone https://github.com/robbyrussell/oh-my-zsh.git ${home}/.oh-my-zsh || (rmdir ${home}/.oh-my-zsh && exit 1)",
     path    => ['/bin', '/usr/bin'],
-    onlyif  => $ohmyzsh::params::user_home_cmd,
+    onlyif  => "${ohmyzsh::params::user_home_cmd_start}${name}${ohmyzsh::params::user_home_cmd_end}",
     user    => $name,
     cwd     => $home,
     require => Package['git'],
@@ -61,7 +61,7 @@ define ohmyzsh::install(
     creates => "${home}/.zshrc",
     command => "cp ${home}/.oh-my-zsh/templates/zshrc.zsh-template ${home}/.zshrc",
     path    => ['/bin', '/usr/bin'],
-    onlyif  => $ohmyzsh::params::user_home_cmd,
+    onlyif  => "${ohmyzsh::params::user_home_cmd_start}${name}${ohmyzsh::params::user_home_cmd_end}",
     user    => $name,
     require => Exec["ohmyzsh::git clone ${name}"],
   }

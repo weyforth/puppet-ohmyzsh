@@ -16,13 +16,15 @@ class ohmyzsh::params {
       $home = '/Users'
       $manage_home = false
       $root = '/var/root'
-      $user_home_cmd = 'dscl . -read /Users/mike NFSHomeDirectory | cut -d ' ' -f 2 | xargs test -e'
+      $user_home_cmd_start = 'dscl . -read /Users/'
+      $user_home_cmd_end  = " NFSHomeDirectory | cut -d ' ' -f 2 | xargs test -e"
     }
     default: {
       $package_provider = undef
       $home = '/home'
       $root = '/root'
-      $user_home_cmd = 'getent passwd ${name} | cut -d : -f 6 | xargs test -e'
+      $user_home_cmd_start = 'getent passwd '
+      $user_home_cmd_end = ' | cut -d : -f 6 | xargs test -e'
     }
   }
 
