@@ -30,27 +30,30 @@ define ohmyzsh::install(
   if ! defined(Package['git']) {
     package { 'git':
       ensure => present,
+      provider => $ohmyzsh::params::package_provider,
     }
   }
 
   if ! defined(Package['zsh']) {
     package { 'zsh':
       ensure => present,
+      provider => $ohmyzsh::params::package_provider,
     }
   }
 
   if $name == 'root' {
-    $home = '/root'
+    $home = $ohmyzsh::params::root
   } else {
     $home = "${ohmyzsh::params::home}/${name}"
   }
 
   exec { "ohmyzsh::git clone ${name}":
     creates => "${home}/.oh-my-zsh",
-    command => "git clone https://github.com/robbyrussell/oh-my-zsh.git ${home}/.oh-my-zsh || rmdir ${home}/.oh-my-zsh && exit 1",
+    command => "git clone https://github.com/robbyrussell/oh-my-zsh.git ${home}/.oh-my-zsh || (rmdir ${home}/.oh-my-zsh && exit 1)",
     path    => ['/bin', '/usr/bin'],
-    onlyif  => "getent passwd ${name} | cut -d : -f 6 | xargs test -e",
+    onlyif  => $ohmyzsh::params::user_home_cmd,
     user    => $name,
+    cwd     => $home,
     require => Package['git'],
   }
 
@@ -58,7 +61,7 @@ define ohmyzsh::install(
     creates => "${home}/.zshrc",
     command => "cp ${home}/.oh-my-zsh/templates/zshrc.zsh-template ${home}/.zshrc",
     path    => ['/bin', '/usr/bin'],
-    onlyif  => "getent passwd ${name} | cut -d : -f 6 | xargs test -e",
+    onlyif  => $ohmyzsh::params::user_home_cmd,
     user    => $name,
     require => Exec["ohmyzsh::git clone ${name}"],
   }

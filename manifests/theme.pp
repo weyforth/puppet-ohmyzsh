@@ -28,7 +28,7 @@ define ohmyzsh::theme(
   include ohmyzsh::params
 
   if $name == 'root' {
-    $home = '/root'
+    $home = $ohmyzsh::params::root
   } else {
     $home = "${ohmyzsh::params::home}/${name}"
   }

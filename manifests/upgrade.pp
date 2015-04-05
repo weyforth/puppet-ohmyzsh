@@ -32,7 +32,7 @@ define ohmyzsh::upgrade {
   }
 
   if $name == 'root' {
-    $home = '/root'
+    $home = $ohmyzsh::params::root
   } else {
     $home = "${ohmyzsh::params::home}/${name}"
   }
